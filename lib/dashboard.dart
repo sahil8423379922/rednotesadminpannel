@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:red_note_admin_pannel/questionsubjects.dart';
+import 'package:red_note_admin_pannel/upcomingquiz/availablesubjects.dart';
 import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 
 class Dashboard extends StatefulWidget {
@@ -29,7 +30,7 @@ class _DashboardState extends State<Dashboard> {
         MaterialButton(
           onPressed: () {
             Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => UpcomingQuiz(),
+              builder: (context) => AvailableSubject(),
             ));
           },
           child: Card(
