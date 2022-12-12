@@ -3,15 +3,17 @@ import 'dart:html';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-class AddQuestion extends StatefulWidget {
+class AddQuizQuestion extends StatefulWidget {
   final String examname;
-  const AddQuestion({super.key, required this.examname});
+  final String quizname;
+  const AddQuizQuestion(
+      {super.key, required this.examname, required this.quizname});
 
   @override
-  State<AddQuestion> createState() => _AddQuestionState();
+  State<AddQuizQuestion> createState() => _AddQuestionState();
 }
 
-class _AddQuestionState extends State<AddQuestion> {
+class _AddQuestionState extends State<AddQuizQuestion> {
   final TextEditingController question = new TextEditingController();
   final TextEditingController optiona = new TextEditingController();
   final TextEditingController optionb = new TextEditingController();
@@ -272,9 +274,9 @@ class _AddQuestionState extends State<AddQuestion> {
     int count = 0;
 
     FirebaseFirestore.instance
-        .collection('onlineexamquiz')
-        .doc('quiz')
-        .collection('RRB')
+        .collection('quiz')
+        .doc(widget.quizname)
+        .collection(widget.examname)
         .get()
         .then((value) => {
               //print(value.docs.length);
@@ -287,8 +289,8 @@ class _AddQuestionState extends State<AddQuestion> {
 
   setquestion(int count) {
     FirebaseFirestore.instance
-        .collection("onlineexamquiz")
-        .doc("quiz")
+        .collection("quiz")
+        .doc(widget.quizname)
         .collection(widget.examname)
         .doc("Question" + count.toString())
         .set({
