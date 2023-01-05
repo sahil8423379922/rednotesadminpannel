@@ -1,6 +1,6 @@
 {
-    "name": "red_note_admin_pannel",
-    "short_name": "red_note_admin_pannel",
+    "name": "webapp",
+    "short_name": "webapp",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

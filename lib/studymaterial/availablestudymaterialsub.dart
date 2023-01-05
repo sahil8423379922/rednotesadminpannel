@@ -3,16 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 
 import '../dashboard.dart';
-import 'addquestion.dart';
+import '../upcomingquiz/addquestion.dart';
+import 'avialblesets.dart';
 
-class AvailableSubject extends StatefulWidget {
-  const AvailableSubject({super.key});
+class AvailableStudymaterialSub extends StatefulWidget {
+  const AvailableStudymaterialSub({super.key});
 
   @override
-  State<AvailableSubject> createState() => _AvailableSubjectState();
+  State<AvailableStudymaterialSub> createState() => _AvailableSubjectState();
 }
 
-class _AvailableSubjectState extends State<AvailableSubject> {
+class _AvailableSubjectState extends State<AvailableStudymaterialSub> {
   List<String> sub = [];
   List<String> subkey = [];
 
@@ -30,20 +31,6 @@ class _AvailableSubjectState extends State<AvailableSubject> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Available Subjects"),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                // do something
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => UpcomingQuiz(),
-                ));
-              },
-            )
-          ],
         ),
         body: Container(
           color: Colors.grey[200],
@@ -58,17 +45,11 @@ class _AvailableSubjectState extends State<AvailableSubject> {
                       width: double.infinity,
                       child: Center(
                         child: ListTile(
-                            trailing: IconButton(
-                              onPressed: () {
-                                deletedata((subkey[position]).toString(),
-                                    context, sub[position]);
-                              },
-                              icon: Icon(Icons.delete),
-                            ),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AddQuestion(
-                                  examname: sub[position],
+                                builder: (context) =>
+                                    AvailableTopicsStudymaterial(
+                                  subname: sub[position],
                                 ),
                               ));
                             },
@@ -90,8 +71,8 @@ class _AvailableSubjectState extends State<AvailableSubject> {
     int i = 1;
     int? count;
     FirebaseFirestore.instance
-        .collection("onlineexamquiz")
-        .doc("examname")
+        .collection("study_material")
+        .doc("subject")
         .get()
         .then((querySnapshot) {
       Map<String, dynamic>? values = querySnapshot.data();

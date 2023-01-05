@@ -5,17 +5,17 @@ import 'package:red_note_admin_pannel/upcomingquiz/addquestionforquiz.dart';
 import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 
 import '../dashboard.dart';
-import 'addquestion.dart';
+import 'avialblesetstopicwise.dart';
 
-class AvailableSets extends StatefulWidget {
+class AvailableTopicsStudymaterial extends StatefulWidget {
   final String subname;
-  const AvailableSets({super.key, required this.subname});
+  const AvailableTopicsStudymaterial({super.key, required this.subname});
 
   @override
-  State<AvailableSets> createState() => _AvailableSubjectState();
+  State<AvailableTopicsStudymaterial> createState() => _AvailableSubjectState();
 }
 
-class _AvailableSubjectState extends State<AvailableSets> {
+class _AvailableSubjectState extends State<AvailableTopicsStudymaterial> {
   List<String> sub = [];
   List<String> subkey = [];
   final TextEditingController setname = new TextEditingController();
@@ -34,20 +34,6 @@ class _AvailableSubjectState extends State<AvailableSets> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Available Sets for " + widget.subname),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                // do something
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => UpcomingQuiz(),
-                ));
-              },
-            )
-          ],
         ),
         body: Container(
           color: Colors.grey[200],
@@ -131,9 +117,10 @@ class _AvailableSubjectState extends State<AvailableSets> {
                                   onTap: () {
                                     Navigator.of(context)
                                         .push(MaterialPageRoute(
-                                      builder: (context) => AddQuizQuestion(
-                                        examname: sub[position],
-                                        quizname: widget.subname,
+                                      builder: (context) =>
+                                          AvailableSetsTopicWise(
+                                        subname: widget.subname,
+                                        setname: sub[position],
                                       ),
                                     ));
                                   },
@@ -156,8 +143,8 @@ class _AvailableSubjectState extends State<AvailableSets> {
 
   void deletedata(String sub1, BuildContext context) {
     FirebaseFirestore.instance
-        .collection("onlineexamquiz")
-        .doc("examname")
+        .collection("study_material")
+        .doc("subject")
         .update({sub1: FieldValue.delete()}).whenComplete(() => {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text("Subject Deleted"),
@@ -171,7 +158,7 @@ class _AvailableSubjectState extends State<AvailableSets> {
 
   Future<void> fetch_data_from_realtime_database(String subname) async {
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('quiz').child(widget.subname).get();
+    final snapshot = await ref.child('exam').child(widget.subname).get();
 
     if (snapshot.exists) {
       Iterable<DataSnapshot> values = snapshot.children;
@@ -184,12 +171,12 @@ class _AvailableSubjectState extends State<AvailableSets> {
 
   Future<void> send_set_name_to_database(String setname) async {
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('quiz').child(widget.subname).get();
+    final snapshot = await ref.child('exam').child(widget.subname).get();
     if (snapshot.exists) {
       Iterable<DataSnapshot> values = snapshot.children;
       int length = values.length;
       ref
-          .child("quiz")
+          .child("exam")
           .child(widget.subname)
           .child(length.toString())
           .set(setname)
@@ -201,7 +188,7 @@ class _AvailableSubjectState extends State<AvailableSets> {
               });
     } else {
       ref
-          .child("quiz")
+          .child("exam")
           .child(widget.subname)
           .child("0")
           .set(setname)
