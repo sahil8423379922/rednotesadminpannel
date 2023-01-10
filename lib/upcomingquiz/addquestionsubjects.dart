@@ -34,18 +34,18 @@ class _AvailableSubjectState extends State<AddQuestionSubjects> {
         appBar: AppBar(
           title: Text("Available Subjects"),
           actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.settings,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                // do something
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Addquizsubject(),
-                ));
-              },
-            )
+            // IconButton(
+            //   icon: Icon(
+            //     Icons.settings,
+            //     color: Colors.white,
+            //   ),
+            //   onPressed: () {
+            //     // do something
+            //     Navigator.of(context).push(MaterialPageRoute(
+            //       builder: (context) => Addquizsubject(),
+            //     ));
+            //   },
+            // )
           ],
         ),
         body: Container(
@@ -61,15 +61,15 @@ class _AvailableSubjectState extends State<AddQuestionSubjects> {
                       width: double.infinity,
                       child: Center(
                         child: ListTile(
-                            trailing: IconButton(
-                              onPressed: () {
-                                print(subkey[position]);
-                                print(sub[position]);
-                                deletedata((subkey[position]).toString(),
-                                    context, sub[position]);
-                              },
-                              icon: Icon(Icons.delete),
-                            ),
+                            // trailing: IconButton(
+                            //   onPressed: () {
+                            //     print(subkey[position]);
+                            //     print(sub[position]);
+                            //     deletedata((subkey[position]).toString(),
+                            //         context, sub[position]);
+                            //   },
+                            //   icon: Icon(Icons.delete),
+                            // ),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
                                 builder: (context) => AvailableSets(

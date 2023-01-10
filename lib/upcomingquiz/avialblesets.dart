@@ -34,20 +34,20 @@ class _AvailableSubjectState extends State<AvailableSets> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Available Sets for " + widget.subname),
-          actions: <Widget>[
-            IconButton(
-              icon: Icon(
-                Icons.add,
-                color: Colors.white,
-              ),
-              onPressed: () {
-                // do something
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => UpcomingQuiz(),
-                ));
-              },
-            )
-          ],
+          // actions: <Widget>[
+          //   IconButton(
+          //     icon: Icon(
+          //       Icons.add,
+          //       color: Colors.white,
+          //     ),
+          //     onPressed: () {
+          //       // do something
+          //       Navigator.of(context).push(MaterialPageRoute(
+          //         builder: (context) => UpcomingQuiz(),
+          //       ));
+          //     },
+          //   )
+          // ],
         ),
         body: Container(
           color: Colors.grey[200],

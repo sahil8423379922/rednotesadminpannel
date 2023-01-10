@@ -62,6 +62,9 @@ class _AvailableSubjectState extends State<AvailableSubject> {
                               onPressed: () {
                                 deletedata((subkey[position]).toString(),
                                     context, sub[position]);
+
+                                print("Value of subkey =" + subkey[position]);
+                                print("Value of subkey =" + sub[position]);
                               },
                               icon: Icon(Icons.delete),
                             ),

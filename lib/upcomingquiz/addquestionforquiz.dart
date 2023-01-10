@@ -1,6 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'AvlQuestion.dart';
+
 class AddQuizQuestion extends StatefulWidget {
   final String examname;
   final String quizname;
@@ -34,7 +36,21 @@ class _AddQuestionState extends State<AddQuizQuestion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Question")),
+      appBar: AppBar(
+        title: Text("Add Question"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AvlQuestion(
+                    setname: widget.examname,
+                    examname: widget.quizname,
+                  ),
+                ));
+              },
+              icon: Icon(Icons.document_scanner))
+        ],
+      ),
       body: Container(
         color: Colors.grey[200],
         child: Padding(

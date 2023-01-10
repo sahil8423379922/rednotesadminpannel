@@ -1,35 +1,54 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:red_note_admin_pannel/upcomingexam/Avlupcomingquestion.dart';
 
-class AddUpcomingExamQuestion extends StatefulWidget {
-  final String examname;
+import '../dashboard.dart';
+import 'AvlQuestion.dart';
+
+class EditQuestion extends StatefulWidget {
+  final String subjectname;
   final String setname;
-  const AddUpcomingExamQuestion(
-      {super.key, required this.examname, required this.setname});
+  final String questionid;
+  final String question;
+  final String opt1;
+  final String opt2;
+  final String opt3;
+  final String opt4;
+  final String answer;
+
+  const EditQuestion(
+      {super.key,
+      required this.question,
+      required this.opt1,
+      required this.opt2,
+      required this.opt3,
+      required this.opt4,
+      required this.answer,
+      required this.subjectname,
+      required this.setname,
+      required this.questionid});
 
   @override
-  State<AddUpcomingExamQuestion> createState() => _AddQuestionState();
+  State<EditQuestion> createState() => _AddQuestionState();
 }
 
-class _AddQuestionState extends State<AddUpcomingExamQuestion> {
+class _AddQuestionState extends State<EditQuestion> {
   final TextEditingController question = new TextEditingController();
   final TextEditingController optiona = new TextEditingController();
   final TextEditingController optionb = new TextEditingController();
   final TextEditingController optionc = new TextEditingController();
   final TextEditingController optiond = new TextEditingController();
   final TextEditingController answer = new TextEditingController();
+
   String txtquestion = "";
   String txtoptiona = "";
   String txtoptionc = "";
   String txtoptiond = "";
   String txtoptionb = "";
   String txtanswer = "";
+
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    print(widget.examname);
   }
 
   @override
@@ -37,18 +56,6 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
     return Scaffold(
       appBar: AppBar(
         title: Text("Add Question"),
-        actions: [
-          IconButton(
-              onPressed: () {
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => AvlUpcomingQuestion(
-                    setname: widget.setname,
-                    examname: widget.examname,
-                  ),
-                ));
-              },
-              icon: Icon(Icons.document_scanner))
-        ],
       ),
       body: Container(
         color: Colors.grey[200],
@@ -65,7 +72,11 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
-                    controller: question,
+                    controller: null,
+                    onChanged: (value) {
+                      txtquestion = value;
+                    },
+                    initialValue: widget.question,
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.document_scanner),
                         border: InputBorder.none,
@@ -85,7 +96,11 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
-                    controller: optiona,
+                    controller: null,
+                    onChanged: (value) {
+                      txtoptiona = value;
+                    },
+                    initialValue: widget.opt1,
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.document_scanner),
                         border: InputBorder.none,
@@ -105,7 +120,11 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
-                    controller: optionb,
+                    initialValue: widget.opt2,
+                    controller: null,
+                    onChanged: (value) {
+                      txtoptionb = value;
+                    },
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.document_scanner),
                         border: InputBorder.none,
@@ -125,7 +144,11 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
-                    controller: optionc,
+                    controller: null,
+                    onChanged: (value) {
+                      txtoptionc = value;
+                    },
+                    initialValue: widget.opt3,
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.document_scanner),
                         border: InputBorder.none,
@@ -145,7 +168,11 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
-                    controller: optiond,
+                    initialValue: widget.opt4,
+                    controller: null,
+                    onChanged: (value) {
+                      txtoptiond = value;
+                    },
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.document_scanner),
                         border: InputBorder.none,
@@ -165,7 +192,11 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
-                    controller: answer,
+                    controller: null,
+                    initialValue: widget.answer,
+                    onChanged: (value) {
+                      txtanswer = value;
+                    },
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.document_scanner),
                         border: InputBorder.none,
@@ -187,13 +218,7 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                       flex: 1,
                       child: MaterialButton(
                         onPressed: () {
-                          question.text = "";
-                          answer.text = "";
-                          optiona.text = "";
-                          optionb.text = "";
-                          optionc.text = "";
-                          optiond.text = "";
-                          setState(() {});
+                          deletedata();
                         },
                         child: Card(
                           color: Colors.blue,
@@ -202,7 +227,7 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                             width: double.infinity,
                             child: Center(
                                 child: Text(
-                              "Reset",
+                              "Delete",
                               style: TextStyle(color: Colors.white),
                             )),
                           ),
@@ -212,12 +237,6 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                       flex: 1,
                       child: MaterialButton(
                         onPressed: () {
-                          txtquestion = question.text;
-                          txtoptiona = optiona.text;
-                          txtoptionb = optionb.text;
-                          txtoptionc = optionc.text;
-                          txtoptiond = optiond.text;
-                          txtanswer = answer.text;
                           if (txtquestion.isEmpty) {
                             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                               content: Text("Enter Question"),
@@ -243,14 +262,8 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
                               content: Text("Enter Answer"),
                             ));
                           } else {
-                            send_data_to_server(
-                                txtquestion,
-                                txtoptiona,
-                                txtoptionb,
-                                txtoptionc,
-                                txtoptiond,
-                                txtanswer,
-                                context);
+                            setquestion(txtquestion, txtoptiona, txtoptionb,
+                                txtoptionc, txtoptiond, txtanswer, context);
                           }
                         },
                         child: Card(
@@ -275,7 +288,7 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
     );
   }
 
-  void send_data_to_server(
+  setquestion(
       String txtquestion,
       String txtoptiona,
       String txtoptionb,
@@ -283,46 +296,11 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
       String txtoptiond,
       String txtanswer,
       BuildContext context) {
-    int i = 1;
-    int count = 0;
-
     FirebaseFirestore.instance
-        .collection('upcomingexam')
-        .doc(widget.examname)
+        .collection("quiz")
+        .doc(widget.subjectname)
         .collection(widget.setname)
-        .get()
-        .then((value) => {
-              //print(value.docs.length);
-              print("Length of documnet =" + (value.docs.length).toString()),
-              count = value.docs.length,
-              count = count + 1,
-
-              setquestion(count),
-            });
-  }
-
-  setquestion(int count) async {
-    int max = 0;
-    int cu = 0;
-    QuerySnapshot querySnapshot = await FirebaseFirestore.instance
-        .collection("upcomingexam")
-        .doc(widget.examname)
-        .collection(widget.setname)
-        .get();
-    for (int i = 0; i < querySnapshot.docs.length; i++) {
-      var a = querySnapshot.docs[i];
-      cu = int.parse(a.id.replaceAll("Question", ""));
-      if (max < cu) {
-        max = cu;
-      }
-    }
-    print("Value of max =" + max.toString());
-
-    FirebaseFirestore.instance
-        .collection("upcomingexam")
-        .doc(widget.examname)
-        .collection(widget.setname)
-        .doc("Question" + (max + 1).toString())
+        .doc(widget.questionid)
         .set({
       "QUESTION": txtquestion,
       "ANSWER": txtanswer,
@@ -342,5 +320,40 @@ class _AddQuestionState extends State<AddUpcomingExamQuestion> {
               optiond.text = "",
               setState(() {})
             });
+  }
+
+  void deletedata() {
+    FirebaseFirestore.instance
+        .collection("quiz")
+        .doc(widget.subjectname)
+        .collection(widget.setname)
+        .doc(widget.questionid)
+        .delete()
+        .whenComplete(() => {
+              ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                content: Text("Question Deleted"),
+              )),
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Dashboard(),
+              ))
+            });
+    setState(() {});
+
+    // FirebaseFirestore.instance
+    //     .collection("onlineexamquiz")
+    //     .doc("bannerlinks")
+    //     .update({sub1: FieldValue.delete()});
+    // print(filename);
+
+    // FirebaseFirestore.instance
+    //     .collection('onlineexamquiz')
+    //     .doc("quiz")
+    //     .collection(filename)
+    //     .get()
+    //     .then((snapshot) {
+    //   for (DocumentSnapshot ds in snapshot.docs) {
+    //     ds.reference.delete();
+    //   }
+    // });
   }
 }

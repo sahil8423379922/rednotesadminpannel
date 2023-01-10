@@ -109,8 +109,7 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
                               child: ListTile(
                                   trailing: IconButton(
                                     onPressed: () {
-                                      deletedata((subkey[position]).toString(),
-                                          context);
+                                      deletedata(sub[position], context);
                                     },
                                     icon: Icon(Icons.delete),
                                   ),
@@ -141,17 +140,34 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
         ));
   }
 
-  void deletedata(String sub1, BuildContext context) {
-    FirebaseFirestore.instance
-        .collection("study_material")
-        .doc("subject")
-        .update({sub1: FieldValue.delete()}).whenComplete(() => {
+  Future<void> deletedata(String sub1, BuildContext context) async {
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child('upcomingexam').get();
+    Iterable<DataSnapshot> values = snapshot.children;
+    int length = values.length;
+    String l = "";
+    for (var x in values) {
+      if (x.value == sub1) {
+        l = x.key.toString();
+      }
+    }
+    //int li = int.parse(l);
+
+    print("Data receive to delete = " + sub1);
+
+    FirebaseDatabase.instance
+        .reference()
+        .child("upcomingexam")
+        .child(l)
+        .remove()
+        .whenComplete(() => {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text("Subject Deleted"),
               )),
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => Dashboard(),
-              ))
+              )),
+              // deletefirestoredata(sub1)
             });
     setState(() {});
   }
@@ -173,25 +189,66 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
     final ref = FirebaseDatabase.instance.ref();
     final snapshot = await ref.child('upcomingexam').get();
     if (snapshot.exists) {
+      var collection = FirebaseFirestore.instance.collection('upcomingexam');
+      collection.doc(setname).set({});
       Iterable<DataSnapshot> values = snapshot.children;
       int length = values.length;
+      String l = "";
+
+      for (var x in values) {
+        l = x.key.toString();
+      }
+      int li = int.parse(l);
+
+      print("Length of the sets =" + length.toString());
       ref
           .child("upcomingexam")
-          .child(length.toString())
+          .child((li + 1).toString())
           .set(setname)
           .then((value) => {
                 setState(() {}),
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("Set Inserted"),
-                ))
+                )),
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Dashboard(),
+                )),
+                setState(() {})
               });
     } else {
       ref.child("upcomingexam").child("0").set(setname).then((value) => {
             setState(() {}),
             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
               content: Text("Set Inserted"),
-            ))
+            )),
+            Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => Dashboard(),
+            )),
+            setState(() {})
           });
     }
+  }
+
+  Future<void> deletefirestoredata(String sub1) async {
+    // final collection = FirebaseFirestore.instance.collection('upcomingexam');
+    // collection.doc("Exam 1").delete();
+    // await FirebaseFirestore.instance
+    //     .runTransaction((Transaction myTransaction) async {
+    //   await myTransaction.delete(snapshot.data.documents[index].reference);
+    // });
+    FirebaseFirestore.instance
+        .collection('upcomingexam')
+        .doc(sub1)
+        .collection("set1")
+        .snapshots()
+        .forEach((querySnapshot) {
+      for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
+        if (querySnapshot.size != 0) {
+          docSnapshot.reference.delete();
+        } else {
+          break;
+        }
+      }
+    });
   }
 }

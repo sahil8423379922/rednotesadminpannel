@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:red_note_admin_pannel/upcomingquiz/AvlQuestion.dart';
 
 class AddQuestion extends StatefulWidget {
   final String examname;
@@ -32,7 +33,21 @@ class _AddQuestionState extends State<AddQuestion> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Add Question")),
+      appBar: AppBar(
+        title: Text("Add Question"),
+        actions: [
+          IconButton(
+              onPressed: () {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => AvlQuestion(
+                    setname: widget.examname,
+                    examname: '',
+                  ),
+                ));
+              },
+              icon: Icon(Icons.document_scanner))
+        ],
+      ),
       body: Container(
         color: Colors.grey[200],
         child: Padding(
