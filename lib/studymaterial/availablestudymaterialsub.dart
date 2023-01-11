@@ -31,6 +31,14 @@ class _AvailableSubjectState extends State<AvailableStudymaterialSub> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Available Subjects"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Dashboard(),
+              ));
+            },
+          ),
         ),
         body: Container(
           color: Colors.grey[200],

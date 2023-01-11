@@ -72,8 +72,8 @@ class _AvailableSubjectState extends State<AvailableSetsTopicWise> {
                               child: ListTile(
                                   trailing: IconButton(
                                     onPressed: () {
-                                      deletedata((subkey[position]).toString(),
-                                          context);
+                                      deletedata(
+                                          (sub[position]).toString(), context);
                                     },
                                     icon: Icon(Icons.delete),
                                   ),
@@ -94,17 +94,44 @@ class _AvailableSubjectState extends State<AvailableSetsTopicWise> {
         ));
   }
 
-  void deletedata(String sub1, BuildContext context) {
-    FirebaseFirestore.instance
-        .collection("study_material")
-        .doc("subject")
-        .update({sub1: FieldValue.delete()}).whenComplete(() => {
+  Future<void> deletedata(String sub1, BuildContext context) async {
+    print("Subname =" + widget.subname);
+    print("Set Name =" + widget.setname);
+    print("Sub1 =" + sub1);
+
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref
+        .child('subject_wise_topic_studymaterial')
+        .child(widget.subname)
+        .child(widget.setname)
+        .get();
+    Iterable<DataSnapshot> values = snapshot.children;
+    int length = values.length;
+    String l = "";
+    for (var x in values) {
+      if (x.key == sub1) {
+        l = x.key.toString();
+      }
+    }
+    //int li = int.parse(l);
+
+    print("Data receive to delete = " + sub1);
+
+    FirebaseDatabase.instance
+        .reference()
+        .child("subject_wise_topic_studymaterial")
+        .child(widget.subname)
+        .child(widget.setname)
+        .child(l)
+        .remove()
+        .whenComplete(() => {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text("Subject Deleted"),
               )),
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => Dashboard(),
-              ))
+              )),
+              // deletefirestoredata(sub1)
             });
     setState(() {});
   }

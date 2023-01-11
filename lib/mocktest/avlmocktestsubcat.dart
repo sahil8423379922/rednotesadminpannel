@@ -7,6 +7,7 @@ import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 import '../dashboard.dart';
 import '../studymaterial/avialblesetstopicwise.dart';
 import 'addquestion.dart';
+import 'avlmocktest.dart';
 
 class AvlmocktestSubcat extends StatefulWidget {
   final String subcatname;
@@ -36,6 +37,14 @@ class _AvailableSubjectState extends State<AvlmocktestSubcat> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Available Mock Test " + widget.subcatname),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Avlmocktest(),
+              ));
+            },
+          ),
         ),
         body: Container(
           color: Colors.grey[200],

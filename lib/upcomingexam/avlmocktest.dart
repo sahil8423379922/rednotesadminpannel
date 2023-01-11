@@ -34,6 +34,14 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
     return Scaffold(
         appBar: AppBar(
           title: Text("Available Upcoming Exam"),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Dashboard(),
+              ));
+            },
+          ),
         ),
         body: Container(
           color: Colors.grey[200],

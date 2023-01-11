@@ -109,8 +109,8 @@ class _AvailableSubjectState extends State<AvailableTopicsStudymaterial> {
                               child: ListTile(
                                   trailing: IconButton(
                                     onPressed: () {
-                                      deletedata((subkey[position]).toString(),
-                                          context);
+                                      deletedata(
+                                          (sub[position]).toString(), context);
                                     },
                                     icon: Icon(Icons.delete),
                                   ),
@@ -141,17 +141,38 @@ class _AvailableSubjectState extends State<AvailableTopicsStudymaterial> {
         ));
   }
 
-  void deletedata(String sub1, BuildContext context) {
-    FirebaseFirestore.instance
-        .collection("study_material")
-        .doc("subject")
-        .update({sub1: FieldValue.delete()}).whenComplete(() => {
+  Future<void> deletedata(String sub1, BuildContext context) async {
+    print("Study Material =" + sub1);
+    print("Subject =" + widget.subname);
+
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child('exam').child(widget.subname).get();
+    Iterable<DataSnapshot> values = snapshot.children;
+    int length = values.length;
+    String l = "";
+    for (var x in values) {
+      if (x.value == sub1) {
+        l = x.key.toString();
+      }
+    }
+    //int li = int.parse(l);
+
+    print("Data receive to delete = " + sub1);
+
+    FirebaseDatabase.instance
+        .reference()
+        .child("exam")
+        .child(widget.subname)
+        .child(l)
+        .remove()
+        .whenComplete(() => {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                content: Text("Subject Deleted"),
+                content: Text("Set Deleted"),
               )),
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => Dashboard(),
-              ))
+              )),
+              // deletefirestoredata(sub1)
             });
     setState(() {});
   }
@@ -175,16 +196,28 @@ class _AvailableSubjectState extends State<AvailableTopicsStudymaterial> {
     if (snapshot.exists) {
       Iterable<DataSnapshot> values = snapshot.children;
       int length = values.length;
+      String l = "";
+
+      for (var x in values) {
+        l = x.key.toString();
+      }
+      int li = int.parse(l);
+
+      print("Length of the sets =" + length.toString());
       ref
           .child("exam")
           .child(widget.subname)
-          .child(length.toString())
+          .child((li + 1).toString())
           .set(setname)
           .then((value) => {
                 setState(() {}),
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("Set Inserted"),
-                ))
+                )),
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Dashboard(),
+                )),
+                setState(() {})
               });
     } else {
       ref
@@ -196,7 +229,11 @@ class _AvailableSubjectState extends State<AvailableTopicsStudymaterial> {
                 setState(() {}),
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("Set Inserted"),
-                ))
+                )),
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Dashboard(),
+                )),
+                setState(() {})
               });
     }
   }
