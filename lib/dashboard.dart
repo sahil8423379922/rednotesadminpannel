@@ -25,33 +25,33 @@ class _DashboardState extends State<Dashboard> {
       appBar: AppBar(
         title: Text("Admin Pannel Red Notes"),
       ),
+      drawer: Drawer(),
       body: Container(
         color: Colors.grey[200],
         child: Column(children: [
           SizedBox(
             height: 20,
           ),
-          // MaterialButton(
-          //   onPressed: () {
-          //     Navigator.of(context).push(MaterialPageRoute(
-          //       builder: (context) => AvailableSubject(),
-          //     ));
-          //   },
-          //   child: Card(
-          //     child: SizedBox(
-          //       height: 60,
-          //       width: double.infinity,
-          //       child: Center(
-          //         child: ListTile(
-          //           leading: Icon(Icons.document_scanner),
-          //           title: Text("Add Live Practice Paper"),
-          //           trailing: Icon(Icons.arrow_forward),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-
+          MaterialButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => AvailableSubject(),
+              ));
+            },
+            child: Card(
+              child: SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: Center(
+                  child: ListTile(
+                    leading: Icon(Icons.document_scanner),
+                    title: Text("Add Live Practice Paper"),
+                    trailing: Icon(Icons.arrow_forward),
+                  ),
+                ),
+              ),
+            ),
+          ),
           MaterialButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(
@@ -72,48 +72,46 @@ class _DashboardState extends State<Dashboard> {
               ),
             ),
           ),
-
-          // MaterialButton(
-          //   onPressed: () {
-          //     Navigator.of(context).push(MaterialPageRoute(
-          //       builder: (context) => AvailableStudymaterialSub(),
-          //     ));
-          //   },
-          //   child: Card(
-          //     child: SizedBox(
-          //       height: 60,
-          //       width: double.infinity,
-          //       child: Center(
-          //         child: ListTile(
-          //           leading: Icon(Icons.document_scanner),
-          //           title: Text("Add Study Material"),
-          //           trailing: Icon(Icons.arrow_forward),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-          // MaterialButton(
-          //   onPressed: () {
-          //     Navigator.of(context).push(MaterialPageRoute(
-          //       builder: (context) => Avlmocktest(),
-          //     ));
-          //   },
-          //   child: Card(
-          //     child: SizedBox(
-          //       height: 60,
-          //       width: double.infinity,
-          //       child: Center(
-          //         child: ListTile(
-          //           leading: Icon(Icons.document_scanner),
-          //           title: Text("Add Mock Test"),
-          //           trailing: Icon(Icons.arrow_forward),
-          //         ),
-          //       ),
-          //     ),
-          //   ),
-          // ),
-
+          MaterialButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => AvailableStudymaterialSub(),
+              ));
+            },
+            child: Card(
+              child: SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: Center(
+                  child: ListTile(
+                    leading: Icon(Icons.document_scanner),
+                    title: Text("Add Study Material"),
+                    trailing: Icon(Icons.arrow_forward),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          MaterialButton(
+            onPressed: () {
+              Navigator.of(context).push(MaterialPageRoute(
+                builder: (context) => Avlmocktest(),
+              ));
+            },
+            child: Card(
+              child: SizedBox(
+                height: 60,
+                width: double.infinity,
+                child: Center(
+                  child: ListTile(
+                    leading: Icon(Icons.document_scanner),
+                    title: Text("Add Mock Test"),
+                    trailing: Icon(Icons.arrow_forward),
+                  ),
+                ),
+              ),
+            ),
+          ),
           MaterialButton(
             onPressed: () {
               Navigator.of(context).push(MaterialPageRoute(

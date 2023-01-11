@@ -35,7 +35,7 @@ class _AvailableSubjectState extends State<AvlmocktestSubcat> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Available Mock Test"),
+          title: Text("Available Mock Test " + widget.subcatname),
         ),
         body: Container(
           color: Colors.grey[200],
@@ -111,8 +111,8 @@ class _AvailableSubjectState extends State<AvlmocktestSubcat> {
                               child: ListTile(
                                   trailing: IconButton(
                                     onPressed: () {
-                                      deletedata((subkey[position]).toString(),
-                                          context);
+                                      deletedata(
+                                          (sub[position]).toString(), context);
                                     },
                                     icon: Icon(Icons.delete),
                                   ),
@@ -142,17 +142,36 @@ class _AvailableSubjectState extends State<AvlmocktestSubcat> {
         ));
   }
 
-  void deletedata(String sub1, BuildContext context) {
-    FirebaseFirestore.instance
-        .collection("study_material")
-        .doc("subject")
-        .update({sub1: FieldValue.delete()}).whenComplete(() => {
+  Future<void> deletedata(String sub1, BuildContext context) async {
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot =
+        await ref.child('mocktestsubcat').child(widget.subcatname).get();
+    Iterable<DataSnapshot> values = snapshot.children;
+    int length = values.length;
+    String l = "";
+    for (var x in values) {
+      if (x.value == sub1) {
+        l = x.key.toString();
+      }
+    }
+    //int li = int.parse(l);
+
+    print("Data receive to delete = " + sub1);
+
+    FirebaseDatabase.instance
+        .reference()
+        .child("mocktestsubcat")
+        .child(widget.subcatname)
+        .child(l)
+        .remove()
+        .whenComplete(() => {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text("Subject Deleted"),
               )),
               Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => Dashboard(),
-              ))
+              )),
+              // deletefirestoredata(sub1)
             });
     setState(() {});
   }
@@ -176,18 +195,32 @@ class _AvailableSubjectState extends State<AvlmocktestSubcat> {
     final snapshot =
         await ref.child('mocktestsubcat').child(widget.subcatname).get();
     if (snapshot.exists) {
+      //var collection = FirebaseFirestore.instance.collection('mocktestsubcat');
+      //collection.doc(setname).set({});
       Iterable<DataSnapshot> values = snapshot.children;
       int length = values.length;
+      String l = "";
+
+      for (var x in values) {
+        l = x.key.toString();
+      }
+      int li = int.parse(l);
+
+      print("Length of the sets =" + length.toString());
       ref
           .child("mocktestsubcat")
           .child(widget.subcatname)
-          .child(length.toString())
+          .child((li + 1).toString())
           .set(setname)
           .then((value) => {
                 setState(() {}),
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("Set Inserted"),
-                ))
+                )),
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Dashboard(),
+                )),
+                setState(() {})
               });
     } else {
       ref
@@ -199,8 +232,46 @@ class _AvailableSubjectState extends State<AvlmocktestSubcat> {
                 setState(() {}),
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("Set Inserted"),
-                ))
+                )),
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => Dashboard(),
+                )),
+                setState(() {})
               });
     }
   }
+
+  // Future<void> send_set_name_to_database(String setname) async {
+  //   final ref = FirebaseDatabase.instance.ref();
+  //   final snapshot =
+  //       await ref.child('mocktestsubcat').child(widget.subcatname).get();
+  //   if (snapshot.exists) {
+  //     Iterable<DataSnapshot> values = snapshot.children;
+  //     int length = values.length;
+  //     ref
+  //         .child("mocktestsubcat")
+  //         .child(widget.subcatname)
+  //         .child(length.toString())
+  //         .set(setname)
+  //         .then((value) => {
+  //               setState(() {}),
+  //               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //                 content: Text("Set Inserted"),
+  //               ))
+  //             });
+  //   } else {
+  //     ref
+  //         .child("mocktestsubcat")
+  //         .child(widget.subcatname)
+  //         .child("0")
+  //         .set(setname)
+  //         .then((value) => {
+  //               setState(() {}),
+  //               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //                 content: Text("Set Inserted"),
+  //               ))
+  //             });
+  //   }
+  // }
+
 }
