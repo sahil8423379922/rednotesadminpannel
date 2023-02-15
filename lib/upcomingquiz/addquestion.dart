@@ -61,10 +61,12 @@ class _AddQuestionState extends State<AddQuestion> {
             Card(
               child: SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 100,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                     controller: question,
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.document_scanner),

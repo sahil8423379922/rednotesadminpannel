@@ -60,8 +60,10 @@ class _AvailableSubjectState extends State<AvailableSubject> {
                         child: ListTile(
                             trailing: IconButton(
                               onPressed: () {
-                                deletedata((subkey[position]).toString(),
-                                    context, sub[position]);
+                                showAlertDialog(
+                                    context,
+                                    (subkey[position]).toString(),
+                                    sub[position]);
 
                                 print("Value of subkey =" + subkey[position]);
                                 print("Value of subkey =" + sub[position]);
@@ -137,5 +139,39 @@ class _AvailableSubjectState extends State<AvailableSubject> {
         ds.reference.delete();
       }
     });
+  }
+
+  showAlertDialog(BuildContext context, String sub1, String filename) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Continue"),
+      onPressed: () {
+        deletedata(sub1, context, filename);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete Subject"),
+      content: Text("Would you like to delete Subject?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
