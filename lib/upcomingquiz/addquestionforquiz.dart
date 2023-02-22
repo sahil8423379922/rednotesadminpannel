@@ -295,8 +295,6 @@ class _AddQuestionState extends State<AddQuizQuestion> {
         .collection(widget.examname)
         .get()
         .then((value) => {
-              //print(value.docs.length);
-              print("Length of documnet =" + (value.docs.length).toString()),
               count = value.docs.length,
               count = count + 1,
               setquestion(count),

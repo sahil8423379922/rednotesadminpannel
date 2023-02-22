@@ -6,6 +6,7 @@ import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 import '../dashboard.dart';
 import 'addquestion.dart';
 import 'addquizsubject.dart';
+import 'available_practice_paper_sets.dart';
 import 'avialblesets.dart';
 
 class AddQuestionSubjects extends StatefulWidget {
@@ -72,7 +73,8 @@ class _AvailableSubjectState extends State<AddQuestionSubjects> {
                             // ),
                             onTap: () {
                               Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AvailableSets(
+                                builder: (context) =>
+                                    Available_Practice_Paper_Sets(
                                   subname: sub[position],
                                 ),
                               ));
