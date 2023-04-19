@@ -67,7 +67,7 @@ class _AddQuestionState extends State<EditUpcomingQuestion> {
             Card(
               child: SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 100,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
@@ -217,7 +217,7 @@ class _AddQuestionState extends State<EditUpcomingQuestion> {
                       flex: 1,
                       child: MaterialButton(
                         onPressed: () {
-                          deletedata();
+                          showAlertDialog(context);
                         },
                         child: Card(
                           color: Colors.blue,
@@ -358,5 +358,39 @@ class _AddQuestionState extends State<EditUpcomingQuestion> {
     //     ds.reference.delete();
     //   }
     // });
+  }
+
+  showAlertDialog(BuildContext context) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Continue"),
+      onPressed: () {
+        deletedata();
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete Question"),
+      content: Text("Would you like to delete question?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }

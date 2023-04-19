@@ -7,6 +7,7 @@ import '../dashboard.dart';
 import 'addquestion.dart';
 import 'addquestionsubjectsForRajasthanGK.dart';
 import 'addquizsubject.dart';
+import 'available_practice_paper_sets.dart';
 import 'avialblesets.dart';
 
 class AddQuestionSubjects extends StatefulWidget {
@@ -63,21 +64,11 @@ class _AvailableSubjectState extends State<AddQuestionSubjects> {
                       child: Center(
                         child: ListTile(
                             onTap: () {
-                              if (sub[position] == "Rajasthan GK" ||
-                                  sub[position] == "Hindi") {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) =>
-                                      AddQuestionSubjectsForRajasthanGK(
-                                    code: sub[position],
-                                  ),
-                                ));
-                              } else {
-                                Navigator.of(context).push(MaterialPageRoute(
-                                  builder: (context) => AvailableSets(
-                                    subname: sub[position],
-                                  ),
-                                ));
-                              }
+                              Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => AvailableSets(
+                                  subname: sub[position],
+                                ),
+                              ));
                             },
                             leading: Padding(
                               padding: const EdgeInsets.all(4.0),

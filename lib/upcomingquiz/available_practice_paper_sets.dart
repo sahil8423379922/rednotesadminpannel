@@ -5,17 +5,19 @@ import 'package:red_note_admin_pannel/upcomingquiz/addquestionforquiz.dart';
 import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 
 import '../dashboard.dart';
-import '../studymaterial/avialblesetstopicwise.dart';
 import 'addquestion.dart';
+import 'avialblesets.dart';
 
-class Avlupcomingexam extends StatefulWidget {
-  const Avlupcomingexam({super.key});
+class Available_Practice_Paper_Sets extends StatefulWidget {
+  final String subname;
+  const Available_Practice_Paper_Sets({super.key, required this.subname});
 
   @override
-  State<Avlupcomingexam> createState() => _AvailableSubjectState();
+  State<Available_Practice_Paper_Sets> createState() =>
+      _AvailableSubjectState();
 }
 
-class _AvailableSubjectState extends State<Avlupcomingexam> {
+class _AvailableSubjectState extends State<Available_Practice_Paper_Sets> {
   List<String> sub = [];
   List<String> subkey = [];
   final TextEditingController setname = new TextEditingController();
@@ -25,7 +27,7 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
     // TODO: implement initState
     super.initState();
     // sendtoserver();
-    fetch_data_from_realtime_database();
+    fetch_data_from_realtime_database(widget.subname);
     //send_data_to_firestore();
   }
 
@@ -33,15 +35,21 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Available Upcoming Exam"),
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) => Dashboard(),
-              ));
-            },
-          ),
+          title: Text("Available Sets for " + widget.subname),
+          // actions: <Widget>[
+          //   IconButton(
+          //     icon: Icon(
+          //       Icons.add,
+          //       color: Colors.white,
+          //     ),
+          //     onPressed: () {
+          //       // do something
+          //       Navigator.of(context).push(MaterialPageRoute(
+          //         builder: (context) => UpcomingQuiz(),
+          //       ));
+          //     },
+          //   )
+          // ],
         ),
         body: Container(
           color: Colors.grey[200],
@@ -117,17 +125,16 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
                               child: ListTile(
                                   trailing: IconButton(
                                     onPressed: () {
-                                      showAlertDialog(context, sub[position]);
+                                      deletedata(
+                                          (sub[position]).toString(), context);
                                     },
                                     icon: Icon(Icons.delete),
                                   ),
                                   onTap: () {
                                     Navigator.of(context)
                                         .push(MaterialPageRoute(
-                                      builder: (context) =>
-                                          AddUpcomingExamQuestion(
-                                        examname: sub[position],
-                                        setname: "set1",
+                                      builder: (context) => AvailableSets(
+                                        subname: sub[position],
                                       ),
                                     ));
                                   },
@@ -148,9 +155,25 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
         ));
   }
 
+  // void deletedata(String sub1, BuildContext context) {
+  //   FirebaseFirestore.instance
+  //       .collection("onlineexamquiz")
+  //       .doc("examname")
+  //       .update({sub1: FieldValue.delete()}).whenComplete(() => {
+  //             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+  //               content: Text("Subject Deleted"),
+  //             )),
+  //             Navigator.of(context).push(MaterialPageRoute(
+  //               builder: (context) => Dashboard(),
+  //             ))
+  //           });
+  //   setState(() {});
+  // }
+
   Future<void> deletedata(String sub1, BuildContext context) async {
+    print("Data received =" + sub1);
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('upcomingexam').get();
+    final snapshot = await ref.child('subexam').child(widget.subname).get();
     Iterable<DataSnapshot> values = snapshot.children;
     int length = values.length;
     String l = "";
@@ -165,7 +188,8 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
 
     FirebaseDatabase.instance
         .reference()
-        .child("upcomingexam")
+        .child("subexam")
+        .child(widget.subname)
         .child(l)
         .remove()
         .whenComplete(() => {
@@ -180,9 +204,9 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
     setState(() {});
   }
 
-  Future<void> fetch_data_from_realtime_database() async {
+  Future<void> fetch_data_from_realtime_database(String subname) async {
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('upcomingexam').get();
+    final snapshot = await ref.child('subexam').child(widget.subname).get();
 
     if (snapshot.exists) {
       Iterable<DataSnapshot> values = snapshot.children;
@@ -195,102 +219,33 @@ class _AvailableSubjectState extends State<Avlupcomingexam> {
 
   Future<void> send_set_name_to_database(String setname) async {
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('upcomingexam').get();
+    final snapshot = await ref.child('subexam').child(widget.subname).get();
     if (snapshot.exists) {
-      var collection = FirebaseFirestore.instance.collection('upcomingexam');
-      collection.doc(setname).set({});
       Iterable<DataSnapshot> values = snapshot.children;
       int length = values.length;
-      String l = "";
-
-      for (var x in values) {
-        l = x.key.toString();
-      }
-      int li = int.parse(l);
-
-      print("Length of the sets =" + length.toString());
       ref
-          .child("upcomingexam")
-          .child((li + 1).toString())
+          .child("subexam")
+          .child(widget.subname)
+          .child(length.toString())
           .set(setname)
           .then((value) => {
                 setState(() {}),
                 ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                   content: Text("Set Inserted"),
-                )),
-                Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => Dashboard(),
-                )),
-                setState(() {})
+                ))
               });
     } else {
-      ref.child("upcomingexam").child("0").set(setname).then((value) => {
-            setState(() {}),
-            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-              content: Text("Set Inserted"),
-            )),
-            Navigator.of(context).push(MaterialPageRoute(
-              builder: (context) => Dashboard(),
-            )),
-            setState(() {})
-          });
+      ref
+          .child("subexam")
+          .child(widget.subname)
+          .child("0")
+          .set(setname)
+          .then((value) => {
+                setState(() {}),
+                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                  content: Text("Set Inserted"),
+                ))
+              });
     }
-  }
-
-  Future<void> deletefirestoredata(String sub1) async {
-    // final collection = FirebaseFirestore.instance.collection('upcomingexam');
-    // collection.doc("Exam 1").delete();
-    // await FirebaseFirestore.instance
-    //     .runTransaction((Transaction myTransaction) async {
-    //   await myTransaction.delete(snapshot.data.documents[index].reference);
-    // });
-    FirebaseFirestore.instance
-        .collection('upcomingexam')
-        .doc(sub1)
-        .collection("set1")
-        .snapshots()
-        .forEach((querySnapshot) {
-      for (QueryDocumentSnapshot docSnapshot in querySnapshot.docs) {
-        if (querySnapshot.size != 0) {
-          docSnapshot.reference.delete();
-        } else {
-          break;
-        }
-      }
-    });
-  }
-
-  showAlertDialog(BuildContext context, String sub1) {
-    // set up the buttons
-    Widget cancelButton = TextButton(
-      child: Text("Cancel"),
-      onPressed: () {
-        Navigator.pop(context, false);
-      },
-    );
-    Widget continueButton = TextButton(
-      child: Text("Continue"),
-      onPressed: () {
-        deletedata(sub1, context);
-      },
-    );
-
-    // set up the AlertDialog
-    AlertDialog alert = AlertDialog(
-      title: Text("Delete Set"),
-      content: Text("Would you like to delete Set?"),
-      actions: [
-        cancelButton,
-        continueButton,
-      ],
-    );
-
-    // show the dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return alert;
-      },
-    );
   }
 }

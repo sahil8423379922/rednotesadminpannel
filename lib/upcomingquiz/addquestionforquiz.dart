@@ -62,10 +62,12 @@ class _AddQuestionState extends State<AddQuizQuestion> {
             Card(
               child: SizedBox(
                 width: double.infinity,
-                height: 50,
+                height: 100,
                 child: Padding(
                   padding: const EdgeInsets.fromLTRB(10, 0, 10, 0),
                   child: TextFormField(
+                    keyboardType: TextInputType.multiline,
+                    maxLines: null,
                     controller: question,
                     decoration: InputDecoration(
                         prefixIcon: Icon(Icons.document_scanner),
@@ -293,8 +295,6 @@ class _AddQuestionState extends State<AddQuizQuestion> {
         .collection(widget.examname)
         .get()
         .then((value) => {
-              //print(value.docs.length);
-              print("Length of documnet =" + (value.docs.length).toString()),
               count = value.docs.length,
               count = count + 1,
               setquestion(count),

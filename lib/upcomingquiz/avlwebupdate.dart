@@ -1,18 +1,19 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:red_note_admin_pannel/upcomingquiz/AddWebUpdate.dart';
 import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 
 import '../dashboard.dart';
 import 'addquestion.dart';
 
-class AvailableSubject extends StatefulWidget {
-  const AvailableSubject({super.key});
+class AvailableWebUpdate extends StatefulWidget {
+  const AvailableWebUpdate({super.key});
 
   @override
-  State<AvailableSubject> createState() => _AvailableSubjectState();
+  State<AvailableWebUpdate> createState() => _AvailableSubjectState();
 }
 
-class _AvailableSubjectState extends State<AvailableSubject> {
+class _AvailableSubjectState extends State<AvailableWebUpdate> {
   List<String> sub = [];
   List<String> subkey = [];
 
@@ -29,7 +30,7 @@ class _AvailableSubjectState extends State<AvailableSubject> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Available Subjects"),
+          title: Text("Available Web Update"),
           actions: <Widget>[
             IconButton(
               icon: Icon(
@@ -39,7 +40,7 @@ class _AvailableSubjectState extends State<AvailableSubject> {
               onPressed: () {
                 // do something
                 Navigator.of(context).push(MaterialPageRoute(
-                  builder: (context) => UpcomingQuiz(),
+                  builder: (context) => AddWebUpdate(),
                 ));
               },
             )
@@ -70,13 +71,7 @@ class _AvailableSubjectState extends State<AvailableSubject> {
                               },
                               icon: Icon(Icons.delete),
                             ),
-                            onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AddQuestion(
-                                  examname: sub[position],
-                                ),
-                              ));
-                            },
+                            onTap: () {},
                             leading: Padding(
                               padding: const EdgeInsets.all(4.0),
                               child: CircleAvatar(
@@ -95,8 +90,8 @@ class _AvailableSubjectState extends State<AvailableSubject> {
     int i = 1;
     int? count;
     FirebaseFirestore.instance
-        .collection("onlineexamquiz")
-        .doc("examname")
+        .collection("websiteupdate")
+        .doc("webname")
         .get()
         .then((querySnapshot) {
       Map<String, dynamic>? values = querySnapshot.data();
@@ -111,8 +106,8 @@ class _AvailableSubjectState extends State<AvailableSubject> {
 
   void deletedata(String sub1, BuildContext context, String filename) {
     FirebaseFirestore.instance
-        .collection("onlineexamquiz")
-        .doc("examname")
+        .collection("websiteupdate")
+        .doc("webname")
         .update({sub1: FieldValue.delete()}).whenComplete(() => {
               ScaffoldMessenger.of(context).showSnackBar(SnackBar(
                 content: Text("Subject Deleted"),
@@ -124,21 +119,16 @@ class _AvailableSubjectState extends State<AvailableSubject> {
     setState(() {});
 
     FirebaseFirestore.instance
-        .collection("onlineexamquiz")
-        .doc("bannerlinks")
+        .collection("websiteupdate")
+        .doc("weblinks")
         .update({sub1: FieldValue.delete()});
     print(filename);
 
     FirebaseFirestore.instance
-        .collection('onlineexamquiz')
-        .doc("quiz")
-        .collection(filename)
-        .get()
-        .then((snapshot) {
-      for (DocumentSnapshot ds in snapshot.docs) {
-        ds.reference.delete();
-      }
-    });
+        .collection("websiteupdate")
+        .doc("webbanner")
+        .update({sub1: FieldValue.delete()});
+    print(filename);
   }
 
   showAlertDialog(BuildContext context, String sub1, String filename) {
@@ -158,8 +148,8 @@ class _AvailableSubjectState extends State<AvailableSubject> {
 
     // set up the AlertDialog
     AlertDialog alert = AlertDialog(
-      title: Text("Delete Subject"),
-      content: Text("Would you like to delete Subject?"),
+      title: Text("Delete Update"),
+      content: Text("Would you like to delete this Update?"),
       actions: [
         cancelButton,
         continueButton,

@@ -117,8 +117,8 @@ class _AvailableSubjectState extends State<Avlmocktest> {
                               child: ListTile(
                                   trailing: IconButton(
                                     onPressed: () {
-                                      deletedata(
-                                          (sub[position]).toString(), context);
+                                      showAlertDialog(
+                                          context, (sub[position]).toString());
                                     },
                                     icon: Icon(Icons.delete),
                                   ),
@@ -235,5 +235,39 @@ class _AvailableSubjectState extends State<Avlmocktest> {
             setState(() {})
           });
     }
+  }
+
+  showAlertDialog(BuildContext context, String sub1) {
+    // set up the buttons
+    Widget cancelButton = TextButton(
+      child: Text("Cancel"),
+      onPressed: () {
+        Navigator.pop(context, false);
+      },
+    );
+    Widget continueButton = TextButton(
+      child: Text("Continue"),
+      onPressed: () {
+        deletedata(sub1, context);
+      },
+    );
+
+    // set up the AlertDialog
+    AlertDialog alert = AlertDialog(
+      title: Text("Delete Subject"),
+      content: Text("Would you like to delete Subject?"),
+      actions: [
+        cancelButton,
+        continueButton,
+      ],
+    );
+
+    // show the dialog
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return alert;
+      },
+    );
   }
 }
