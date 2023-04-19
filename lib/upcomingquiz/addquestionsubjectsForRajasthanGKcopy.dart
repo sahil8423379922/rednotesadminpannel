@@ -5,20 +5,22 @@ import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 
 import '../dashboard.dart';
 import 'addquestion.dart';
-import 'addquestionsubjectsForRajasthanGKcopy.dart';
 import 'addquizsubject.dart';
 import 'avialblesets.dart';
 
-class AddQuestionSubjectsForRajasthanGK extends StatefulWidget {
+class AddQuestionSubjectsForRajasthanGKcopy extends StatefulWidget {
   final String code;
-  const AddQuestionSubjectsForRajasthanGK({super.key, required this.code});
+  final String subname;
+  const AddQuestionSubjectsForRajasthanGKcopy(
+      {super.key, required this.code, required this.subname});
 
   @override
-  State<AddQuestionSubjectsForRajasthanGK> createState() =>
+  State<AddQuestionSubjectsForRajasthanGKcopy> createState() =>
       _AvailableSubjectState();
 }
 
-class _AvailableSubjectState extends State<AddQuestionSubjectsForRajasthanGK> {
+class _AvailableSubjectState
+    extends State<AddQuestionSubjectsForRajasthanGKcopy> {
   List<String> sub = [];
   List<String> subkey = [];
   final TextEditingController setname = new TextEditingController();
@@ -36,7 +38,7 @@ class _AvailableSubjectState extends State<AddQuestionSubjectsForRajasthanGK> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Available Sets for " + widget.code),
+          title: Text("Available Sets for " + widget.subname),
           actions: <Widget>[],
         ),
         body: Column(
@@ -121,25 +123,12 @@ class _AvailableSubjectState extends State<AddQuestionSubjectsForRajasthanGK> {
                                     icon: Icon(Icons.delete),
                                   ),
                                   onTap: () {
-                                    if (widget.code == "Rajasthan GK" ||
-                                        widget.code == "Hindi") {
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (context) =>
-                                            AddQuestionSubjectsForRajasthanGKcopy(
-                                          subname: sub[position],
-                                          code: widget.code,
-                                        ),
-                                      ));
-                                    } else {
-                                      Navigator.of(context)
-                                          .push(MaterialPageRoute(
-                                        builder: (context) => AvailableSets(
-                                          subname: sub[position],
-                                          subject: widget.code,
-                                        ),
-                                      ));
-                                    }
+                                    Navigator.of(context)
+                                        .push(MaterialPageRoute(
+                                      builder: (context) => AvailableSets(
+                                        subname: sub[position],
+                                      ),
+                                    ));
                                   },
                                   leading: Padding(
                                     padding: const EdgeInsets.all(4.0),
@@ -161,7 +150,12 @@ class _AvailableSubjectState extends State<AddQuestionSubjectsForRajasthanGK> {
   Future<void> deletedata(String sub1, BuildContext context) async {
     print("Data received =" + sub1);
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('mcq_questions').child(widget.code).get();
+    final snapshot = await ref
+        .child('mcq_questions')
+        .child("subcat")
+        .child(widget.code)
+        .child(widget.subname)
+        .get();
     Iterable<DataSnapshot> values = snapshot.children;
     int length = values.length;
     String l = "";
@@ -177,7 +171,9 @@ class _AvailableSubjectState extends State<AddQuestionSubjectsForRajasthanGK> {
     FirebaseDatabase.instance
         .reference()
         .child("mcq_questions")
+        .child("subcat")
         .child(widget.code)
+        .child(widget.subname)
         .child(l)
         .remove()
         .whenComplete(() => {
@@ -197,7 +193,12 @@ class _AvailableSubjectState extends State<AddQuestionSubjectsForRajasthanGK> {
     int? count;
 
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child("mcq_questions").child(widget.code).get();
+    final snapshot = await ref
+        .child("mcq_questions")
+        .child("subcat")
+        .child(widget.code)
+        .child(widget.subname)
+        .get();
     if (snapshot.exists) {
       Iterable<DataSnapshot> data = snapshot.children;
       for (var x in data) {
@@ -209,13 +210,20 @@ class _AvailableSubjectState extends State<AddQuestionSubjectsForRajasthanGK> {
 
   Future<void> send_set_name_to_database(String setname) async {
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('mcq_questions').child(widget.code).get();
+    final snapshot = await ref
+        .child('mcq_questions')
+        .child("subcat")
+        .child(widget.code)
+        .child(widget.subname)
+        .get();
     if (snapshot.exists) {
       Iterable<DataSnapshot> values = snapshot.children;
       int length = values.length;
       ref
           .child("mcq_questions")
+          .child("subcat")
           .child(widget.code)
+          .child(widget.subname)
           .child(length.toString())
           .set(setname)
           .then((value) => {
@@ -227,7 +235,9 @@ class _AvailableSubjectState extends State<AddQuestionSubjectsForRajasthanGK> {
     } else {
       ref
           .child("mcq_questions")
+          .child("subcat")
           .child(widget.code)
+          .child(widget.subname)
           .child("0")
           .set(setname)
           .then((value) => {

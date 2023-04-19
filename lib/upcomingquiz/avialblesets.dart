@@ -9,7 +9,8 @@ import 'addquestion.dart';
 
 class AvailableSets extends StatefulWidget {
   final String subname;
-  const AvailableSets({super.key, required this.subname});
+  final String subject;
+  const AvailableSets({super.key, required this.subname, this.subject = ""});
 
   @override
   State<AvailableSets> createState() => _AvailableSubjectState();
@@ -129,6 +130,10 @@ class _AvailableSubjectState extends State<AvailableSets> {
                                     icon: Icon(Icons.delete),
                                   ),
                                   onTap: () {
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(SnackBar(
+                                      content: Text(widget.subject),
+                                    ));
                                     Navigator.of(context)
                                         .push(MaterialPageRoute(
                                       builder: (context) => AddQuizQuestion(

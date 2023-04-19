@@ -4,6 +4,7 @@ import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 
 import '../dashboard.dart';
 import 'addquestion.dart';
+import 'addquestionsubjectsForRajasthanGK.dart';
 
 class AvailableSubject extends StatefulWidget {
   const AvailableSubject({super.key});
@@ -71,11 +72,21 @@ class _AvailableSubjectState extends State<AvailableSubject> {
                               icon: Icon(Icons.delete),
                             ),
                             onTap: () {
-                              Navigator.of(context).push(MaterialPageRoute(
-                                builder: (context) => AddQuestion(
-                                  examname: sub[position],
-                                ),
-                              ));
+                              if (sub[position] == "Rajasthan GK" ||
+                                  sub[position] == "Hindi") {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) =>
+                                      AddQuestionSubjectsForRajasthanGK(
+                                    code: sub[position],
+                                  ),
+                                ));
+                              } else {
+                                Navigator.of(context).push(MaterialPageRoute(
+                                  builder: (context) => AddQuestion(
+                                    examname: sub[position],
+                                  ),
+                                ));
+                              }
                             },
                             leading: Padding(
                               padding: const EdgeInsets.all(4.0),
