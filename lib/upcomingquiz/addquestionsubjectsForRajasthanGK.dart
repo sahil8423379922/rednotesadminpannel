@@ -1,21 +1,23 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
-import 'package:red_note_admin_pannel/upcomingquiz/addquestionforquiz.dart';
 import 'package:red_note_admin_pannel/upcomingquiz/upcoming.dart';
 
 import '../dashboard.dart';
 import 'addquestion.dart';
+import 'addquizsubject.dart';
+import 'avialblesets.dart';
 
-class AvailableSets extends StatefulWidget {
-  final String subname;
-  const AvailableSets({super.key, required this.subname});
+class AddQuestionSubjectsForRajasthanGK extends StatefulWidget {
+  final String code;
+  const AddQuestionSubjectsForRajasthanGK({super.key, required this.code});
 
   @override
-  State<AvailableSets> createState() => _AvailableSubjectState();
+  State<AddQuestionSubjectsForRajasthanGK> createState() =>
+      _AvailableSubjectState();
 }
 
-class _AvailableSubjectState extends State<AvailableSets> {
+class _AvailableSubjectState extends State<AddQuestionSubjectsForRajasthanGK> {
   List<String> sub = [];
   List<String> subkey = [];
   final TextEditingController setname = new TextEditingController();
@@ -25,7 +27,7 @@ class _AvailableSubjectState extends State<AvailableSets> {
     // TODO: implement initState
     super.initState();
     // sendtoserver();
-    fetch_data_from_realtime_database(widget.subname);
+    fetch_data_from_firestore();
     //send_data_to_firestore();
   }
 
@@ -33,28 +35,14 @@ class _AvailableSubjectState extends State<AvailableSets> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text("Available Sub Sets for " + widget.subname),
-          // actions: <Widget>[
-          //   IconButton(
-          //     icon: Icon(
-          //       Icons.add,
-          //       color: Colors.white,
-          //     ),
-          //     onPressed: () {
-          //       // do something
-          //       Navigator.of(context).push(MaterialPageRoute(
-          //         builder: (context) => UpcomingQuiz(),
-          //       ));
-          //     },
-          //   )
-          // ],
+          title: Text("Available Sets for " + widget.code),
+          actions: <Widget>[],
         ),
-        body: Container(
-          color: Colors.grey[200],
-          child: Column(
-            children: [
-              Expanded(
-                  child: Padding(
+        body: Column(
+          children: [
+            Expanded(
+              flex: 1,
+              child: Padding(
                 padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
                 child: SizedBox(
                   height: double.infinity,
@@ -107,9 +95,12 @@ class _AvailableSubjectState extends State<AvailableSets> {
                     ],
                   ),
                 ),
-              )),
-              Expanded(
-                flex: 8,
+              ),
+            ),
+            Expanded(
+              flex: 8,
+              child: Container(
+                color: Colors.grey[200],
                 child: ListView.builder(
                     itemCount: sub.length,
                     itemBuilder: (context, position) {
@@ -131,9 +122,8 @@ class _AvailableSubjectState extends State<AvailableSets> {
                                   onTap: () {
                                     Navigator.of(context)
                                         .push(MaterialPageRoute(
-                                      builder: (context) => AddQuizQuestion(
-                                        examname: sub[position],
-                                        quizname: widget.subname,
+                                      builder: (context) => AvailableSets(
+                                        subname: sub[position],
                                       ),
                                     ));
                                   },
@@ -149,30 +139,15 @@ class _AvailableSubjectState extends State<AvailableSets> {
                       );
                     }),
               ),
-            ],
-          ),
+            ),
+          ],
         ));
   }
-
-  // void deletedata(String sub1, BuildContext context) {
-  //   FirebaseFirestore.instance
-  //       .collection("onlineexamquiz")
-  //       .doc("examname")
-  //       .update({sub1: FieldValue.delete()}).whenComplete(() => {
-  //             ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-  //               content: Text("Subject Deleted"),
-  //             )),
-  //             Navigator.of(context).push(MaterialPageRoute(
-  //               builder: (context) => Dashboard(),
-  //             ))
-  //           });
-  //   setState(() {});
-  // }
 
   Future<void> deletedata(String sub1, BuildContext context) async {
     print("Data received =" + sub1);
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('quiz').child(widget.subname).get();
+    final snapshot = await ref.child('mcq_questions').child(widget.code).get();
     Iterable<DataSnapshot> values = snapshot.children;
     int length = values.length;
     String l = "";
@@ -187,8 +162,8 @@ class _AvailableSubjectState extends State<AvailableSets> {
 
     FirebaseDatabase.instance
         .reference()
-        .child("quiz")
-        .child(widget.subname)
+        .child("mcq_questions")
+        .child(widget.code)
         .child(l)
         .remove()
         .whenComplete(() => {
@@ -203,14 +178,16 @@ class _AvailableSubjectState extends State<AvailableSets> {
     setState(() {});
   }
 
-  Future<void> fetch_data_from_realtime_database(String subname) async {
-    final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('quiz').child(widget.subname).get();
+  fetch_data_from_firestore() async {
+    int i = 1;
+    int? count;
 
+    final ref = FirebaseDatabase.instance.ref();
+    final snapshot = await ref.child("mcq_questions").child(widget.code).get();
     if (snapshot.exists) {
-      Iterable<DataSnapshot> values = snapshot.children;
-      for (var element in values) {
-        sub.add((element.value).toString());
+      Iterable<DataSnapshot> data = snapshot.children;
+      for (var x in data) {
+        sub.add(x.value.toString());
         setState(() {});
       }
     }
@@ -218,13 +195,13 @@ class _AvailableSubjectState extends State<AvailableSets> {
 
   Future<void> send_set_name_to_database(String setname) async {
     final ref = FirebaseDatabase.instance.ref();
-    final snapshot = await ref.child('quiz').child(widget.subname).get();
+    final snapshot = await ref.child('mcq_questions').child(widget.code).get();
     if (snapshot.exists) {
       Iterable<DataSnapshot> values = snapshot.children;
       int length = values.length;
       ref
-          .child("quiz")
-          .child(widget.subname)
+          .child("mcq_questions")
+          .child(widget.code)
           .child(length.toString())
           .set(setname)
           .then((value) => {
@@ -235,8 +212,8 @@ class _AvailableSubjectState extends State<AvailableSets> {
               });
     } else {
       ref
-          .child("quiz")
-          .child(widget.subname)
+          .child("mcq_questions")
+          .child(widget.code)
           .child("0")
           .set(setname)
           .then((value) => {
